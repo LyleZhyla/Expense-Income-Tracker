@@ -11,6 +11,7 @@ if (-not (Test-Path $Python)) {
 & $Python -m PyInstaller `
     --noconfirm `
     --clean `
+    --windowed `
     --name "Income Expense Tracker" `
     --add-data "templates;templates" `
     --add-data "static;static" `

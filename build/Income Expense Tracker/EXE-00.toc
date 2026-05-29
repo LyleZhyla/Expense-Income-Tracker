@@ -1,9 +1,9 @@
 ('C:\\Users\\ADMIN\\Documents\\Expense_Tracker\\build\\Income Expense '
  'Tracker\\Income Expense Tracker.exe',
- True,
+ False,
  False,
  True,
- 'C:\\Users\\ADMIN\\Documents\\Expense_Tracker\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\images\\icon-console.ico',
+ 'C:\\Users\\ADMIN\\Documents\\Expense_Tracker\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\images\\icon-windowed.ico',
  None,
  False,
  False,
@@ -76,8 +76,8 @@
  [],
  False,
  False,
- 1780015603,
- [('run.exe',
-   'C:\\Users\\ADMIN\\Documents\\Expense_Tracker\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
+ 1780016824,
+ [('runw.exe',
+   'C:\\Users\\ADMIN\\Documents\\Expense_Tracker\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')],
  'C:\\Users\\ADMIN\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll')

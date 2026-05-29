@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Income Expense Tracker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=2">
 </head>
 <body>
     <main class="page">
-        <section class="hero">
+        <section class="hero" aria-labelledby="page-title">
             <div>
                 <p class="kicker">Local desktop tracker</p>
-                <h1>Income Expense Tracker</h1>
+                <h1 id="page-title">Income Expense Tracker</h1>
                 <p class="hero-copy">
                     Track money coming in, spending going out, and your running balance in one private local app.
                 </p>
@@ -225,17 +225,17 @@
                         <tbody>
                             {% for transaction in transactions %}
                                 <tr>
-                                    <td>
+                                    <td data-label="Name">
                                         <div class="title-cell">
                                             <span class="doc-icon {{ transaction.type }}"></span>
                                             <strong>{{ transaction.title }}</strong>
                                         </div>
                                     </td>
-                                    <td><span class="pill {{ transaction.type }}">{{ transaction.type }}</span></td>
-                                    <td><span class="tag">{{ transaction.category }}</span></td>
-                                    <td>{{ transaction.transaction_date }}</td>
-                                    <td class="muted-cell">{{ transaction.notes or "&mdash;"|safe }}</td>
-                                    <td class="amount {{ transaction.type }}">
+                                    <td data-label="Type"><span class="pill {{ transaction.type }}">{{ transaction.type }}</span></td>
+                                    <td data-label="Category"><span class="tag">{{ transaction.category }}</span></td>
+                                    <td data-label="Date">{{ transaction.transaction_date }}</td>
+                                    <td data-label="Notes" class="muted-cell">{{ transaction.notes or "&mdash;"|safe }}</td>
+                                    <td data-label="Amount" class="amount {{ transaction.type }}">
                                         {% if transaction.type == "income" %}+{% else %}-{% endif %}&#8369;{{ "%.2f"|format(transaction.amount) }}
                                     </td>
                                     <td class="actions">

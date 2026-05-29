@@ -30,6 +30,14 @@ body {
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
+body,
+input,
+select,
+textarea,
+button {
+    -webkit-font-smoothing: antialiased;
+}
+
 .page {
     width: min(1160px, calc(100% - 32px));
     margin: 0 auto;
@@ -64,7 +72,7 @@ p {
 }
 
 h1 {
-    font-size: clamp(2.15rem, 5vw, 4.1rem);
+    font-size: clamp(2rem, 5vw, 4.1rem);
     line-height: 1.04;
     margin-bottom: 10px;
 }
@@ -167,9 +175,10 @@ label,
 
 .metric strong {
     display: block;
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
     line-height: 1.2;
     margin: 7px 0;
+    overflow-wrap: anywhere;
 }
 
 .negative,
@@ -257,6 +266,7 @@ textarea {
     border-radius: 6px;
     color: var(--text);
     font: inherit;
+    font-size: 16px;
     padding: 10px 11px;
 }
 
@@ -285,9 +295,11 @@ textarea {
 }
 
 .type-toggle input {
+    height: 1px;
     position: absolute;
     opacity: 0;
     pointer-events: none;
+    width: 1px;
 }
 
 .type-toggle span {
@@ -312,7 +324,8 @@ button,
     cursor: pointer;
     font: inherit;
     font-weight: 800;
-    min-height: 40px;
+    line-height: 1.25;
+    min-height: 44px;
     padding: 9px 13px;
     text-decoration: none;
 }
@@ -330,7 +343,7 @@ button,
 }
 
 .secondary-button {
-    min-height: 38px;
+    min-height: 44px;
 }
 
 .clear-link {
@@ -402,6 +415,7 @@ button,
 
 .table-wrap {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -479,7 +493,7 @@ th {
     border: 1px solid transparent;
     background: transparent;
     color: var(--danger);
-    min-height: 34px;
+    min-height: 40px;
     padding: 7px 10px;
 }
 
@@ -544,12 +558,50 @@ th {
         justify-content: flex-start;
         width: 100%;
     }
+
+    .filters select {
+        flex: 1 1 180px;
+    }
 }
 
 @media (max-width: 620px) {
     .page {
-        width: min(100% - 22px, 1160px);
-        padding-top: 24px;
+        width: 100%;
+        padding: 0 12px 20px;
+    }
+
+    .hero {
+        gap: 14px;
+        margin-bottom: 14px;
+        padding: 20px 0 16px;
+    }
+
+    .kicker,
+    .section-label {
+        font-size: 0.72rem;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 12vw, 2.75rem);
+    }
+
+    h2 {
+        font-size: 1rem;
+    }
+
+    .hero-copy {
+        font-size: 0.95rem;
+    }
+
+    .balance-card,
+    .panel,
+    .metric {
+        padding: 14px;
+    }
+
+    .balance-card strong {
+        font-size: clamp(1.65rem, 10vw, 2.2rem);
+        overflow-wrap: anywhere;
     }
 
     .summary-grid,
@@ -557,9 +609,214 @@ th {
         grid-template-columns: 1fr;
     }
 
+    .summary-grid,
+    .dashboard-grid {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .metric {
+        min-height: 112px;
+    }
+
+    .panel-heading,
+    .database-topbar,
+    .breakdown-line {
+        align-items: flex-start;
+    }
+
+    .panel-heading {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .date-chip {
+        align-self: flex-start;
+    }
+
+    .type-toggle {
+        gap: 8px;
+    }
+
+    .type-toggle span {
+        min-height: 46px;
+    }
+
+    .form-row {
+        gap: 10px;
+    }
+
+    input,
+    select,
+    textarea {
+        min-height: 46px;
+    }
+
+    textarea {
+        min-height: 86px;
+    }
+
+    .database-topbar {
+        padding: 14px;
+    }
+
+    .filters {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr;
+    }
+
     .filters select,
     .filters button,
     .clear-link {
+        min-height: 46px;
         width: 100%;
+    }
+
+    .clear-link {
+        justify-content: center;
+    }
+
+    .table-wrap {
+        overflow: visible;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+        display: block;
+    }
+
+    table {
+        min-width: 0;
+    }
+
+    thead {
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+    }
+
+    tbody {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    tr {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    td {
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 46px;
+        padding: 10px 12px;
+        text-align: right;
+    }
+
+    td::before {
+        color: var(--muted);
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-size: 0.76rem;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    td:first-child {
+        align-items: flex-start;
+        background: var(--soft-2);
+        display: grid;
+        gap: 7px;
+        text-align: left;
+    }
+
+    td:first-child::before {
+        content: "";
+        display: none;
+    }
+
+    td:last-child {
+        border-bottom: 0;
+    }
+
+    .title-cell {
+        min-width: 0;
+    }
+
+    .title-cell strong {
+        overflow-wrap: anywhere;
+    }
+
+    .muted-cell {
+        color: var(--text);
+        overflow-wrap: anywhere;
+    }
+
+    .amount {
+        font-size: 1.05rem;
+        text-align: right;
+    }
+
+    .actions {
+        display: block;
+        width: 100%;
+    }
+
+    .actions::before {
+        display: none;
+    }
+
+    .actions form,
+    .delete-btn {
+        width: 100%;
+    }
+
+    .delete-btn {
+        border-color: #f3b9b4;
+        background: var(--error-bg);
+    }
+
+    .empty-state {
+        margin: 12px;
+        padding: 22px 14px;
+    }
+}
+
+@media (max-width: 390px) {
+    .page {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .balance-card,
+    .panel,
+    .metric {
+        padding: 12px;
+    }
+
+    td {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+        text-align: left;
+    }
+
+    .amount {
+        text-align: left;
     }
 }

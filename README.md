@@ -26,6 +26,26 @@ dist\Income Expense Tracker\Income Expense Tracker.exe
 
 You can zip the whole `dist\Income Expense Tracker` folder and share it as the downloadable app. Keep the files in that folder together.
 
+The Windows build opens without a CMD window.
+
+## Mobile Android app
+
+The native Android version is in:
+
+```text
+android-app
+```
+
+Open `android-app` in Android Studio, then use `Build > Build Bundle(s) / APK(s) > Build APK(s)`.
+
+The APK is usually created here:
+
+```text
+android-app\app\build\outputs\apk\debug\app-debug.apk
+```
+
+Send the APK to your Android phone and install it. This mobile version does not need Flask, MySQL, CMD, or a browser server.
+
 ## Data location
 
 During development, the database is saved in `instance\income_expense_tracker.sqlite3`.
