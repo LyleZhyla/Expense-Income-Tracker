@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Income Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <div>
+                <p class="kicker">Local desktop tracker</p>
+                <h1>Income Expense Tracker</h1>
+                <p class="hero-copy">
+                    Track money coming in, spending going out, and your running balance in one private local app.
+                </p>
+            </div>
+            <div class="balance-card">
+                <span>Available balance</span>
+                <strong class="{% if balance < 0 %}negative{% endif %}">&#8369;{{ "%.2f"|format(balance) }}</strong>
+                <small>{{ totals.count }} saved transactions</small>
+            </div>
+        </section>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="summary-grid">
+            <article class="metric income">
+                <span>Total income</span>
+                <strong>&#8369;{{ "%.2f"|format(totals.total_income) }}</strong>
+                <small>This month: &#8369;{{ "%.2f"|format(totals.month_income) }}</small>
+            </article>
+            <article class="metric expense">
+                <span>Total expenses</span>
+                <strong>&#8369;{{ "%.2f"|format(totals.total_expense) }}</strong>
+                <small>This month: &#8369;{{ "%.2f"|format(totals.month_expense) }}</small>
+            </article>
+            <article class="metric">
+                <span>Month balance</span>
+                <strong class="{% if month_balance < 0 %}negative{% endif %}">&#8369;{{ "%.2f"|format(month_balance) }}</strong>
+                <small>{{ today[:7] }}</small>
+            </article>
+            <article class="metric">
+                <span>Current view</span>
+                <strong class="{% if filtered_balance < 0 %}negative{% endif %}">&#8369;{{ "%.2f"|format(filtered_balance) }}</strong>
+                <small>{{ filtered_totals.filtered_count }} visible records</small>
+            </article>
+        </section>
+
+        <section class="dashboard-grid">
+            <form class="quick-add panel" action="{{ url_for('add_transaction') }}" method="post">
+                <div class="panel-heading">
+                    <div>
+                        <p class="section-label">Quick add</p>
+                        <h2>New transaction</h2>
+                    </div>
+                    <span class="date-chip">{{ today }}</span>
+                </div>
+
+                <fieldset class="type-toggle">
+                    <legend>Type</legend>
+                    <label>
+                        <input type="radio" name="type" value="income" required>
+                        <span>Income</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="type" value="expense" checked required>
+                        <span>Expense</span>
+                    </label>
+                </fieldset>
+
+                <label>
+                    Name
+                    <input type="text" name="title" placeholder="Salary, allowance, groceries" maxlength="120" required>
+                </label>
+
+                <div class="form-row">
+                    <label>
+                        Amount
+                        <input type="number" name="amount" min="0.01" step="0.01" placeholder="0.00" required>
+                    </label>
+                    <label>
+                        Date
+                        <input type="date" name="transaction_date" value="{{ today }}" required>
+                    </label>
+                </div>
+
+                <label>
+                    Category
+                    <input list="category-list" name="category" placeholder="Salary, Food, Bills" maxlength="80" required>
+                    <datalist id="category-list">
+                        <option value="Salary">
+                        <option value="Allowance">
+                        <option value="Business">
+                        <option value="Food">
+                        <option value="Transport">
+                        <option value="Bills">
+                        <option value="Groceries">
+                        <option value="Savings">
+                        <option value="General">
+                    </datalist>
+                </label>
+
+                <label>
+                    Notes
+                    <textarea name="notes" rows="3" placeholder="Optional"></textarea>
+                </label>
+
+                <button class="primary-button" type="submit">Save transaction</button>
+            </form>
+
+            <aside class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="section-label">Breakdown</p>
+                        <h2>Expenses by category</h2>
+                    </div>
+                </div>
+
+                {% if expense_categories %}
+                    <div class="breakdown-list">
+                        {% for item in expense_categories %}
+                            {% set percent = ((item.total / totals.total_expense) * 100) if totals.total_expense else 0 %}
+                            <div class="breakdown-item">
+                                <div class="breakdown-line">
+                                    <span>{{ item.category }}</span>
+                                    <strong>&#8369;{{ "%.2f"|format(item.total) }}</strong>
+                                </div>
+                                <div class="progress-track expense-track">
+                                    <div class="progress-fill expense-fill" style="width: {{ "%.0f"|format(percent) }}%"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">No expenses yet.</p>
+                {% endif %}
+
+                <div class="panel-divider"></div>
+                <div class="panel-heading compact-heading">
+                    <div>
+                        <p class="section-label">Sources</p>
+                        <h2>Income by category</h2>
+                    </div>
+                </div>
+
+                {% if income_categories %}
+                    <div class="breakdown-list compact-list">
+                        {% for item in income_categories %}
+                            {% set percent = ((item.total / totals.total_income) * 100) if totals.total_income else 0 %}
+                            <div class="breakdown-item">
+                                <div class="breakdown-line">
+                                    <span>{{ item.category }}</span>
+                                    <strong>&#8369;{{ "%.2f"|format(item.total) }}</strong>
+                                </div>
+                                <div class="progress-track income-track">
+                                    <div class="progress-fill income-fill" style="width: {{ "%.0f"|format(percent) }}%"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">No income yet.</p>
+                {% endif %}
+            </aside>
+        </section>
+
+        <section class="panel database-panel">
+            <div class="database-topbar">
+                <div>
+                    <p class="section-label">Records</p>
+                    <h2>Transaction log</h2>
+                </div>
+
+                <form class="filters" method="get">
+                    <select name="type" aria-label="Filter by type">
+                        <option value="">All types</option>
+                        <option value="income" {% if selected_type == "income" %}selected{% endif %}>Income</option>
+                        <option value="expense" {% if selected_type == "expense" %}selected{% endif %}>Expense</option>
+                    </select>
+                    <select name="category" aria-label="Filter by category">
+                        <option value="">All categories</option>
+                        {% for category in category_options %}
+                            <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <select name="month" aria-label="Filter by month">
+                        <option value="">All months</option>
+                        {% for item in months %}
+                            <option value="{{ item.month }}" {% if item.month == selected_month %}selected{% endif %}>
+                                {{ item.month }} | +&#8369;{{ "%.2f"|format(item.income) }} / -&#8369;{{ "%.2f"|format(item.expense) }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button class="secondary-button" type="submit">Filter</button>
+                    <a class="clear-link" href="{{ url_for('index') }}">Clear</a>
+                </form>
+            </div>
+
+            {% if transactions %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Notes</th>
+                                <th class="amount">Amount</th>
+                                <th class="actions"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                                <tr>
+                                    <td>
+                                        <div class="title-cell">
+                                            <span class="doc-icon {{ transaction.type }}"></span>
+                                            <strong>{{ transaction.title }}</strong>
+                                        </div>
+                                    </td>
+                                    <td><span class="pill {{ transaction.type }}">{{ transaction.type }}</span></td>
+                                    <td><span class="tag">{{ transaction.category }}</span></td>
+                                    <td>{{ transaction.transaction_date }}</td>
+                                    <td class="muted-cell">{{ transaction.notes or "&mdash;"|safe }}</td>
+                                    <td class="amount {{ transaction.type }}">
+                                        {% if transaction.type == "income" %}+{% else %}-{% endif %}&#8369;{{ "%.2f"|format(transaction.amount) }}
+                                    </td>
+                                    <td class="actions">
+                                        <form action="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" method="post">
+                                            <button class="delete-btn" type="submit" title="Delete transaction">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No transactions in this view</h3>
+                    <p>Add a new income or expense record, or clear the filters to see all transactions.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Database Error</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="setup-shell">
+        <section class="setup-panel">
+            <p class="section-label">Local database</p>
+            <h1>Database error</h1>
+            <p>
+                The app stores data in a local SQLite file. Close the app, make sure the app folder
+                is writable, then open it again.
+            </p>
+            <p class="error-detail">{{ error }}</p>
+        </section>
+    </main>
+</body>
+</html>
