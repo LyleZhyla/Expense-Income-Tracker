@@ -6,7 +6,7 @@ if (-not (Test-Path $Python)) {
     python -m venv .venv
 }
 
-& $Python -m pip install -r requirements.txt
+& $Python -m pip install -r requirements-dev.txt
 
 & $Python -m PyInstaller `
     --noconfirm `
