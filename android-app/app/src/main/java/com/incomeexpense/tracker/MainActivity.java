@@ -109,9 +109,11 @@ public class MainActivity extends Activity {
         typeGroup.setPadding(0, dp(10), 0, dp(6));
         RadioButton income = radio("Income");
         RadioButton expense = radio("Expense");
-        expense.setChecked(true);
+        income.setId(View.generateViewId());
+        expense.setId(View.generateViewId());
         typeGroup.addView(income);
         typeGroup.addView(expense);
+        typeGroup.check(expense.getId());
         panel.addView(typeGroup);
 
         EditText nameInput = input("Name");
@@ -133,7 +135,7 @@ public class MainActivity extends Activity {
             String amountText = value(amountInput);
             String category = value(categoryInput);
             String notes = value(notesInput);
-            String type = income.isChecked() ? "income" : "expense";
+            String type = typeGroup.getCheckedRadioButtonId() == income.getId() ? "income" : "expense";
 
             if (name.isEmpty() || amountText.isEmpty() || category.isEmpty()) {
                 toast("Name, amount, and category are required.");
